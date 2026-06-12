@@ -1,7 +1,11 @@
 import express from "express";
 import multer from "multer";
 import { auth, userMiddleware } from "../middleware/auth.js";
-import { appliedJobs, applyJob } from "../controllers/appliedJob.controller.js";
+import {
+  appliedJobs,
+  applyJob,
+  getApplication,
+} from "../controllers/appliedJob.controller.js";
 
 const router = express.Router();
 
@@ -22,5 +26,6 @@ const upload = multer({ storage });
 router.post("/apply/:id", auth, upload.single("file"), applyJob);
 
 router.get("/appliedJob", auth, appliedJobs);
+router.get("/getApplications", auth, getApplication);
 
 export default router;

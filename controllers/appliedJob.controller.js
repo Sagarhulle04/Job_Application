@@ -51,9 +51,17 @@ export const applyJob = async (req, res) => {
 
 export const appliedJobs = async (req, res) => {
   try {
+    if (req.user.role === "recruiter") {
+      return res
+        .status(400)
+        .json({ success: false, message: "Recruiter cannot see applied jobs" });
+    }
+
     const jobsApplied = await AppliedJob.find({
       user: req.user.id,
-    }).populate("jobId");
+    })
+      .populate("jobId")
+      .populate("user");
 
     res.status(200).json({
       success: true,
@@ -65,5 +73,26 @@ export const appliedJobs = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+export const getApplication = async (req, res) => {
+  try {
+    const appliedJobs = await AppliedJob.find().populate("user");
+    const jobs = await Job.find();
+
+    const getAppliedJobDetails = jobs.filter((job) =>
+      appliedJobs.some(
+        (appliedJob) => appliedJob.jobId.toString() === job._id.toString(),
+      ),
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Applications applied for the job",
+      getAppliedJobDetails,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
