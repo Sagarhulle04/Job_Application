@@ -4,6 +4,7 @@ dotenv.config({ quiet: true });
 import express from "express";
 import cors from "cors";
 import main from "./db/index.js";
+import fileUpload from "express-fileupload";
 
 import userRouter from "./routes/user.routes.js";
 import jobRouter from "./routes/job.routes.js";
@@ -16,6 +17,13 @@ app.use("/pdf", express.static("pdf"));
 app.use("/appliedJobPdf", express.static("appliedJobPdf"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  }),
+);
 
 app.use("/", userRouter);
 app.use("/", jobRouter);

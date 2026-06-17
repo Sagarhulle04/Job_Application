@@ -1,10 +1,11 @@
 import User from "../models/user.schema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import uploadFileToCloudinary from "../utils/uploadFileToCloudinary.js";
 
 export const register = async (req, res) => {
   const { email, name, password, role } = req.body;
-  const image = req.file.filename;
+  const image = req.files?.image;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -17,7 +18,7 @@ export const register = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const url = "http://localhost:3000/uploads/" + image;
+    const url = await uploadFileToCloudinary(image);
 
     const user = await User.create({
       name,
