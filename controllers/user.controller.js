@@ -5,7 +5,7 @@ import uploadFileToCloudinary from "../utils/uploadFileToCloudinary.js";
 
 export const register = async (req, res) => {
   const { email, name, password, role } = req.body;
-  const image = req.files?.image;
+  const file = req.files?.file;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -18,7 +18,7 @@ export const register = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const url = await uploadFileToCloudinary(image);
+    const url = await uploadFileToCloudinary(file);
 
     const user = await User.create({
       name,
