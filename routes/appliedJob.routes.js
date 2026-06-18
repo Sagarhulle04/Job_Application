@@ -23,7 +23,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/apply/:id", auth, upload.single("file"), applyJob);
+// router.post("/apply/:id", auth, upload.single("file"), applyJob);
+router.post(["/apply/:id", "/applyJob/:id"], auth, applyJob);
 
 router.get("/appliedJob", auth, appliedJobs);
 router.get("/getApplications", auth, getApplication);

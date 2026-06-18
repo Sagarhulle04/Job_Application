@@ -1,14 +1,19 @@
 import Job from "../models/jobs.schema.js";
+import uploadFileToCloudinary from "../utils/uploadFileToCloudinary.js";
 
 export const createJob = async (req, res) => {
   const { companyName, jobTitle, jobDescription, skills, experience } =
     req.body;
-  const pdf = req.file.filename;
+  const file = req.files?.file;
+
+  if (!file) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Job description PDF is required" });
+  }
 
   try {
     const user = req.user;
-
-    console.log(user.role);
 
     if (user.role !== "recruiter") {
       return res
@@ -16,7 +21,7 @@ export const createJob = async (req, res) => {
         .json({ success: false, message: "Only recruiter can add the job" });
     }
 
-    const pdfLink = "http://localhost:3000/pdf/" + pdf;
+    const pdfLink = await uploadFileToCloudinary(file);
 
     const job = await Job.create({
       companyName,

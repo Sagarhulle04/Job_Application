@@ -15,21 +15,22 @@ import multer from "multer";
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "pdf/");
-  },
-  filename: (req, file, cb) => {
-    const safeName = file.originalname
-      .replace(/\s+/g, "-")
-      .replace(/[^a-zA-Z0-9.-]/g, "");
-    cb(null, Date.now() + "-" + safeName);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "pdf/");
+//   },
+//   filename: (req, file, cb) => {
+//     const safeName = file.originalname
+//       .replace(/\s+/g, "-")
+//       .replace(/[^a-zA-Z0-9.-]/g, "");
+//     cb(null, Date.now() + "-" + safeName);
+//   },
+// });
 
-const upload = multer({ storage });
+// const upload = multer({ storage });
 
-router.post("/createJob", auth, upload.single("file"), createJob);
+// router.post("/createJob", auth, upload.single("file"), createJob);
+router.post("/createJob", auth, createJob);
 
 router.get("/allJobList", auth, allJobList);
 router.put("/updatePost", auth, recruiterMiddleware, updateJobPost);

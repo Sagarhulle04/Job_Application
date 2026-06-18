@@ -1,8 +1,9 @@
 import AppliedJob from "../models/appliedJobs.schema.js";
 import Job from "../models/jobs.schema.js";
+import uploadFileToCloudinary from "../utils/uploadFileToCloudinary.js";
 
 export const applyJob = async (req, res) => {
-  const resumePDF = req.file.filename;
+  const file = req?.files?.file;
   try {
     if (req.user.role === "recruiter") {
       return res
@@ -10,7 +11,7 @@ export const applyJob = async (req, res) => {
         .json({ success: false, message: "Only Users Can Apply The Job" });
     }
 
-    if (!req.file) {
+    if (!file) {
       return res
         .status(400)
         .json({ success: false, message: "Please upload the resume" });
@@ -35,7 +36,9 @@ export const applyJob = async (req, res) => {
         .json({ success: false, message: "You have already applied the job" });
     }
 
-    const resumeLink = "http://localhost:3000/appliedJobPdf/" + resumePDF;
+    // const resumeLink = "http://localhost:3000/appliedJobPdf/" + resumePDF;
+    const resumeLink = await uploadFileToCloudinary(file);
+
     const appliedJob = await AppliedJob.create({
       user: req.user.id,
       jobId: jobIdLink,
